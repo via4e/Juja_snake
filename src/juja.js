@@ -1,4 +1,8 @@
-'use strict'
+import './assets/style.scss'
+import $ from "jquery"
+window.$ = $
+//window.jQuery = jQuery
+
 console.log('Legend of Juja Snake v.1.2  2011 - 12.02.2022');
 
 //

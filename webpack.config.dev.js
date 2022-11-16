@@ -12,7 +12,7 @@ module.exports = {
       directory: path.join(__dirname, 'public'),
     },
     compress: true,
-    port: 9000,
+    port: 8899,
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -51,7 +51,7 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js'],
   },
   output: {
-    filename: 'build.js',
+    filename: 'juja.js',
     path: path.resolve(__dirname, 'dist'),
   },
 };

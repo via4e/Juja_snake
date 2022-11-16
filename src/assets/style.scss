@@ -1,0 +1,151 @@
+$green: #007046;
+$dark-green: #002200;
+$bg-dark-green: #01271e;
+
+body {
+    background: $bg-dark-green;
+}
+
+#header {
+    width: 1024px;
+    height: 150px;
+    margin: 20px auto;
+    border: 12px solid $green;
+    background: url(img/header.png) no-repeat;
+}
+
+#main {
+    position: relative;
+    width: 1024px;
+    height: 640px;
+    margin: 0 auto;
+}
+
+#fence {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 800px;
+    height: 600px;
+    border: 3px dotted green;
+    background-color: #000;
+}
+
+/* SCORES */
+
+.scores {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 180px;
+    height: 36px;
+
+    .text {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 90px;
+        color: yellow;
+        font-size: 20px;
+        padding: 13px 0;
+    }
+}
+
+#sco {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 60px;
+    height: 36px;
+    color: yellow;
+    font-size: 30px;
+    padding: 5px;
+    background-color: #000;
+    border: 3px dotted green;
+}
+
+/* Level */
+
+.levels {
+    position: absolute;
+    top: 80px;
+    right: 0;
+    width: 180px;
+    height: 36px;
+}
+
+.levels .text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 90px;
+    color: yellow;
+    font-size: 20px;
+    padding: 13px 0;
+}
+
+#lvl {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 60px;
+    height: 36px;
+    color: yellow;
+    font-size: 30px;
+    padding: 5px;
+    background-color: #000;
+    border: 3px dotted green;
+}
+
+/* Prize pic 440x180 */
+#prizepic {
+    position: absolute;
+    top: 160px;
+    right: 0;
+    width: 180px;
+    height: 440px;
+    background-color: #000;
+    border: 3px dotted green;
+}
+
+/* Game */
+
+.snake-head {
+    position: relative;
+    float: left;
+    width: 20px;
+    height: 20px;
+    background: url(img/snake-head.png) no-repeat;
+}
+
+.snake-body {
+    position: relative;
+    float: left;
+    width: 20px;
+    height: 20px;
+    background: url(img/snake-body.png) no-repeat;
+}
+
+.food {
+    position: relative;
+    float: left;
+    width: 20px;
+    height: 20px;
+    background: url(img/food.png) no-repeat;
+}
+
+.tile {
+    position: relative;
+    float: left;
+    width: 18px;
+    height: 18px;
+    border: 1px solid $dark-green;
+}
+
+.yellow {
+    background-color: yellow;
+}
+
+.grey {
+    background-color: lightgrey;
+}
