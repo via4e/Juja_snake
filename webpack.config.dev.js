@@ -1,50 +1,57 @@
-'use strict'
-const webpack = require('webpack')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
-const path = require('path')
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = {
   mode: 'development',
-  entry: "/",
+  entry: './src/juja.js',
+  devtool: 'inline-source-map',
   devServer: {
-    hot: true,
-    watchOptions: {
-      poll: true
+    static: {
+      directory: path.join(__dirname, 'public'),
     },
-    port: 8899
+    compress: true,
+    port: 9000,
   },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './src/index.html'
+    }),
+    new MiniCssExtractPlugin({
+      filename: '[name].[contenthash].css',
+      chunkFilename: '[id].css',
+    }),
+    new ESLintPlugin({
+      extensions: ['.tsx', '.ts', '.js'],
+      exclude: 'node_modules'
+    })
+  ],
   module: {
     rules: [
       {
-        test: /\.js$/,
-        use: 'babel-loader'
-      },       
-      {
-        test: /\.css$/,
-        use: [
-          'css-loader'
-        ]
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
       },
       {
-        test: /\.scss$/,
-        use: [
-            'css-loader',
-            'sass-loader'
+        test: /\.(scss|css)$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader',
+        {
+          loader: 'sass-loader',
+          options: {
+            sourceMap: true
+          }
+        }
         ]
-      },
-      {
-        test: /\.svg$/,
-        loader: 'svg-inline-loader',
-      }      
-    ]
+      }
+    ],
   },
-  plugins: [
-    new webpack.HotModuleReplacementPlugin(),
-    new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: 'index.html',
-      inject: true
-    })
-  ]
-}
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
+  },
+  output: {
+    filename: 'build.js',
+    path: path.resolve(__dirname, 'dist'),
+  },
+};

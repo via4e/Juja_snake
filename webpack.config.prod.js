@@ -1,40 +1,55 @@
-"use strict";
-const webpack = require("webpack");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = {
-  mode: "production",
-  entry: "/",
+  mode: 'production',
+  entry: './src/juja.js',
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './src/index.html'
+    }),
+    new CleanWebpackPlugin(),
+    new CopyPlugin({
+      patterns: [{ from: 'src/assets', to: 'assets' }]
+    }),
+    new MiniCssExtractPlugin({
+      filename: '[name].[contenthash].css',
+      chunkFilename: '[id].css',
+    }),
+    new ESLintPlugin({
+      extensions: ['.tsx', '.ts', '.js'],
+      exclude: 'node_modules'
+    }),
+  ],
   module: {
     rules: [
       {
-        test: /\.js$/,
-        use: "babel-loader"
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
       },
       {
-        test: /\.css$/,
-        use: ["css-loader"]
-      },
-      {
-        test: /\.scss$/,
-        use: ["css-loader", "sass-loader"]
-      },
-      {
-        test: /\.svg$/,
-        loader: "svg-inline-loader"
+        test: /\.(scss|css)$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader',
+        {
+          loader: 'sass-loader',
+          options: {
+            sourceMap: true
+          }
+        }
+        ]
       }
-    ]
+    ],
   },
-  plugins: [
-    new HtmlWebpackPlugin({
-      filename: "index.html",
-      template: "index.html",
-      inject: true
-    })
-  ],
-  optimization: {
-    splitChunks: {
-      chunks: "all"
-    }
-  }
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
+  },
+  output: {
+    filename: '[name].[contenthash].js',
+    path: path.resolve(__dirname, 'dist'),
+  },
 };

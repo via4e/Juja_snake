@@ -1,5 +1,5 @@
 'use strict'
-console.log('Legend of Juja Snake v.1.2  2011 - 12.02.2018');
+console.log('Legend of Juja Snake v.1.2  2011 - 12.02.2022');
 
 //
 // 0 < x 29,  0 < y < 39
@@ -14,7 +14,7 @@ console.log('Legend of Juja Snake v.1.2  2011 - 12.02.2018');
 
 let game = {};
 let snake = {};
-let foods = [];
+//let foods = [];
 let area = [];
 
 function jujaStart() {
@@ -111,30 +111,23 @@ function update() {
 
   // Food (prize) check
   if (game.foodsOnScreen < 1) {
-    let correctFood = false;
-
-    while (!correctFood) {
       let x = Math.round(Math.random() * 40);
       let y = Math.round(Math.random() * 30);
       if (area[x][y] === 0) {
         area[x][y] = 3;
-        correctFood = true;
       } //if empty field, set food there
-      //console.log('!',x,y,area)  
     }
     game.foodsOnScreen = 1;
-
-    //debugger;
-  }
 }//update
 
 function draw() {
   console.log ("draw:", snake, Date.now() )
-  let t = 'tile';
-  let tsh = 'snake-head';
-  let tsb = 'snake-body';
-  let tf = 'food';
-  let c = 0;
+  const tileEmpty = 'tile';
+  const tileSnakeHead = 'snake-head';
+  const tileSnakeBody = 'snake-body';
+  const tileFood = 'food';
+  let currentTile = tileEmpty;
+  // let c = 0;
 
   $('#fence').empty();
   $("#sco").text(game.score);
@@ -142,13 +135,12 @@ function draw() {
 
   for (let i in area) {
     for (let j = 0; j < 40; j++) {
-      c++;
-      let a = t;
-      if (area[i][j] == 0) { a = t }
-      if (area[i][j] == 1) { a = tsh } //head
-      if (area[i][j] == 2) { a = tsb } //body 
-      if (area[i][j] == 3) { a = tf } //food                     
-      $('#fence').append(`<div class='` + a + `'></div>`)
+      // c++;
+      if (area[i][j] == 0) { currentTile = tileEmpty }
+      if (area[i][j] == 1) { currentTile = tileSnakeHead } //head
+      if (area[i][j] == 2) { currentTile = tileSnakeBody } //body 
+      if (area[i][j] == 3) { currentTile = tileFood } //food                     
+      $('#fence').append(`<div class='` + currentTile + `'></div>`)
     }
   }
 }
@@ -235,6 +227,7 @@ function init() {
 }
 
 function checkJquery() {
+  console.log('chkjq---')
   if (window.$) {
     jujaStart();
   } else {
