@@ -21,17 +21,12 @@ module.exports = {
       chunkFilename: '[id].css',
     }),
     new ESLintPlugin({
-      extensions: ['.tsx', '.ts', '.js'],
+      extensions: ['.js'],
       exclude: 'node_modules'
     }),
   ],
   module: {
     rules: [
-      {
-        test: /\.tsx?$/,
-        use: 'ts-loader',
-        exclude: /node_modules/,
-      },
       {
         test: /\.(scss|css)$/,
         use: [MiniCssExtractPlugin.loader, 'css-loader',
@@ -50,7 +45,7 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
+    extensions: ['.js'],
   },
   output: {
     filename: '[name].[contenthash].js',

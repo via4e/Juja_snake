@@ -34,21 +34,27 @@ function jujaStart() {
 function startLoop() {
   game.started = Date.now()
   game.score = 0;
-  game.cycle = setInterval(loop, game.speed)
+  game.lastUpdate = 0;
+  game.cycle = requestAnimationFrame(gameLoop);
   return;
 }
 
-function loop() {
-
-  if (!game.pause){
-    draw();
-    update();
-  }
-
+function gameLoop(timestamp) {
   if (snake.dead) {
     console.log('i see, snake dead');
-    clearInterval(game.cycle);
+    cancelAnimationFrame(game.cycle);
+    return;
   }
+
+  if (!game.pause) {
+    if (timestamp - game.lastUpdate >= game.speed) {
+      update();
+      game.lastUpdate = timestamp;
+    }
+    draw();
+  }
+
+  game.cycle = requestAnimationFrame(gameLoop);
 }
 
 function update() {
@@ -115,36 +121,41 @@ function update() {
 
   // Food (prize) check
   if (game.foodsOnScreen < 1) {
-      let x = Math.round(Math.random() * 40);
-      let y = Math.round(Math.random() * 30);
-      if (area[x][y] === 0) {
-        area[x][y] = 3;
-      } //if empty field, set food there
+      let foodX, foodY;
+      do {
+        foodX = Math.floor(Math.random() * 40);
+        foodY = Math.floor(Math.random() * 30);
+      } while (area[foodY][foodX] !== 0);
+      area[foodY][foodX] = 3;
     }
     game.foodsOnScreen = 1;
 }//update
 
 function draw() {
-  console.log ("draw:", snake, Date.now() )
   const tileEmpty = 'tile';
   const tileSnakeHead = 'snake-head';
   const tileSnakeBody = 'snake-body';
   const tileFood = 'food';
   let currentTile = tileEmpty;
-  // let c = 0;
 
-  $('#fence').empty();
   $("#sco").text(game.score);
   $("#lvl").text(game.level)
 
-  for (let i in area) {
+  // Only update changed tiles instead of rebuilding entire grid
+  for (let i = 0; i < 30; i++) {
     for (let j = 0; j < 40; j++) {
-      // c++;
+      const index = i * 40 + j;
+      const $tile = $('#fence').children().eq(index);
+      
       if (area[i][j] == 0) { currentTile = tileEmpty }
-      if (area[i][j] == 1) { currentTile = tileSnakeHead } //head
-      if (area[i][j] == 2) { currentTile = tileSnakeBody } //body 
-      if (area[i][j] == 3) { currentTile = tileFood } //food                     
-      $('#fence').append(`<div class='` + currentTile + `'></div>`)
+      if (area[i][j] == 1) { currentTile = tileSnakeHead }
+      if (area[i][j] == 2) { currentTile = tileSnakeBody }
+      if (area[i][j] == 3) { currentTile = tileFood }
+      
+      // Only update if class changed
+      if (!$tile.hasClass(currentTile)) {
+        $tile.attr('class', currentTile);
+      }
     }
   }
 }
@@ -223,9 +234,17 @@ function init() {
     area[i] = [];
   }
 
-  for (let i in area) {
+  for (let i = 0; i < 30; i++) {
     for (let j = 0; j < 40; j++) {
       area[i][j] = 0
+    }
+  }
+
+  // Build the grid DOM once
+  $('#fence').empty();
+  for (let i = 0; i < 30; i++) {
+    for (let j = 0; j < 40; j++) {
+      $('#fence').append(`<div class='tile'></div>`);
     }
   }
 }

@@ -1,4 +1,4 @@
-const matcher = (str1:string, str2:string) => str1.toLowerCase() === str2.toLowerCase() ? true : false
+const matcher = (str1, str2) => str1.toLowerCase() === str2.toLowerCase() ? true : false
 
 describe('Stub test cases', () => {
     it('compare strings', () => {
