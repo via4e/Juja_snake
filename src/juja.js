@@ -3,7 +3,33 @@ import $ from "jquery"
 window.$ = $
 //window.jQuery = jQuery
 
-console.log('Legend of Juja Snake v.1.2  2011 - 12.02.2022');
+// Sound engine - initialized on first user interaction
+let sounds = {};
+let soundsInitialized = false;
+
+function initSounds() {
+  if (soundsInitialized) return;
+
+  sounds = {
+    eat: new Audio(require('./assets/sounds/kickass.wav')),
+    die: new Audio(require('./assets/sounds/die.wav')),
+    levelUp: new Audio(require('./assets/sounds/levelup.wav'))
+  };
+
+  sounds.eat.volume = 0.3;
+  sounds.die.volume = 0.5;
+  sounds.levelUp.volume = 0.4;
+
+  soundsInitialized = true;
+}
+
+function playSound(name) {
+  if (!soundsInitialized) initSounds();
+  if (sounds[name]) {
+    sounds[name].currentTime = 0;
+    sounds[name].play().catch(e => console.log('Sound play error:', name, e));
+  }
+}
 
 //
 // 0 < x 29,  0 < y < 39
@@ -24,7 +50,12 @@ let area = [];
 function jujaStart() {
 
   $('html').keydown(function (e) {
+    initSounds();
     keyHandler(e)
+  });
+
+  $('#main').click(function() {
+    initSounds();
   });
 
   init();
@@ -41,7 +72,6 @@ function startLoop() {
 
 function gameLoop(timestamp) {
   if (snake.dead) {
-    console.log('i see, snake dead');
     cancelAnimationFrame(game.cycle);
     return;
   }
@@ -90,19 +120,18 @@ function update() {
 
   switch (chk) {
     case 2:
-      console.log('Snake die.');
+      playSound('die');
       snake.dead = true;
       break;
     case 3:
-      console.log('Snake take food.');
+      playSound('eat');
       game.score += 10 * game.level;
       snake.bodylength = snake.bodylength + 5;
       game.foodsOnScreen--;
       game.foods--;
       if (game.foods < 1) {
         game.level++;
-        // сделат проверку увеличения уровня игры
-        console.log('start next level', game.level)
+        playSound('levelUp');
         startLoop();
       }
       break;
@@ -121,14 +150,14 @@ function update() {
 
   // Food (prize) check
   if (game.foodsOnScreen < 1) {
-      let foodX, foodY;
-      do {
-        foodX = Math.floor(Math.random() * 40);
-        foodY = Math.floor(Math.random() * 30);
-      } while (area[foodY][foodX] !== 0);
-      area[foodY][foodX] = 3;
-    }
+    let foodX, foodY;
+    do {
+      foodX = Math.floor(Math.random() * 40);
+      foodY = Math.floor(Math.random() * 30);
+    } while (area[foodY][foodX] !== 0);
+    area[foodY][foodX] = 3;
     game.foodsOnScreen = 1;
+  }
 }//update
 
 function draw() {
@@ -161,32 +190,28 @@ function draw() {
 }
 
 function keyHandler(e) {
-  // e.which --->   Enter-13   Space-32
-  console.log ('key:', e.which)
   let key = e.which;
 
   switch (key) {
     case (37):  // left
-      snake.direction = 2;
+      if (snake.direction !== 3) snake.direction = 2;
       break;
     case (38):  // up
-      snake.direction = 0;
+      if (snake.direction !== 1) snake.direction = 0;
       break;
     case (39):  // right
-      snake.direction = 3;
+      if (snake.direction !== 2) snake.direction = 3;
       break;
     case (40):  // down
-      snake.direction = 1;
+      if (snake.direction !== 0) snake.direction = 1;
       break;
     case (27):  // ESC
-      console.log('ESC'); snake.dead = true;
+      snake.dead = true;
       break;
     case (32):  // Space
-      console.log('Spacebar (pause)', snake, game, area);
       game.pause = !game.pause
       break;
     case (13):  // Enter
-      console.log('Restart game');
       startLoop()
       break;
   }
@@ -250,11 +275,9 @@ function init() {
 }
 
 function checkJquery() {
-  console.log('chkjq---')
   if (window.$) {
     jujaStart();
   } else {
-    console.log('wait jq loading');
     setTimeout(checkJquery, 50);
   }
 }

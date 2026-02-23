@@ -42,6 +42,13 @@ module.exports = {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
         type: 'asset/resource',
       },
+      {
+        test: /\.(wav|mp3|ogg)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'sounds/[hash][ext][query]'
+        }
+      },
     ],
   },
   resolve: {
